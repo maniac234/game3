@@ -84,7 +84,7 @@
         }
         
         canvas {
-            background-image: url('6NDuxzaZgwx22dSMhK6lf'), linear-gradient(135deg, rgba(15, 23, 41, 0.5) 0%, rgba(26, 35, 64, 0.5) 100%);
+            background: linear-gradient(135deg, rgba(15, 23, 41, 0.5) 0%, rgba(26, 35, 64, 0.5) 100%);
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -132,12 +132,27 @@
             border: 2px solid rgba(34, 197, 94, 0.4);
             border-radius: 15px;
             padding: 20px;
-            box-shadow: 0 0 40px rgba(34, 197, 94, 0.3);
+            box-shadow: 0 0 40px rgba(34, 197, 94, 0.3), 0 0 60px rgba(34, 197, 94, 0.2);
             max-height: 70vh;
             overflow-y: auto;
             z-index: 100;
             display: none;
             animation: slideIn 0.3s ease-out;
+        }
+        
+        .missions-panel::before {
+            content: '⏸️ JOGO PAUSADO';
+            display: block;
+            background: linear-gradient(135deg, rgba(255, 165, 0, 0.3), rgba(255, 215, 0, 0.2));
+            border: 1px solid #FFD700;
+            border-radius: 8px;
+            padding: 10px;
+            margin: -20px -20px 20px -20px;
+            text-align: center;
+            color: #FFD700;
+            font-weight: bold;
+            font-size: 14px;
+            letter-spacing: 1px;
         }
         
         .missions-panel.show {
@@ -296,8 +311,6 @@
         .checkin-button:disabled .checkin-reward {
             color: #666;
         }
-        
-
         
         .missions-header {
             display: flex;
@@ -511,6 +524,265 @@
             transform: scale(0.95);
         }
         
+        /* Game Over Panel */
+        .game-over-panel {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.85);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 200;
+            animation: fadeIn 0.3s ease-out;
+            backdrop-filter: blur(3px);
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        .game-over-content {
+            background: rgba(15, 23, 42, 0.95);
+            border: 3px solid #FF4444;
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 0 60px rgba(255, 68, 68, 0.5), inset 0 0 30px rgba(255, 68, 68, 0.1);
+            max-width: 400px;
+            animation: slideDown 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .game-over-title {
+            font-size: 36px;
+            color: #FF4444;
+            margin-bottom: 20px;
+            text-shadow: 0 0 15px rgba(255, 68, 68, 0.5);
+            font-weight: bold;
+        }
+        
+        .game-over-message {
+            font-size: 18px;
+            color: #FFD700;
+            margin-bottom: 15px;
+        }
+        
+        .game-over-lives {
+            font-size: 16px;
+            color: #22c55e;
+            margin-bottom: 30px;
+        }
+        
+        .use-life-button {
+            padding: 16px 32px;
+            background: linear-gradient(135deg, #FF1744 0%, #C41C3B 100%);
+            color: white;
+            border: 2px solid #FF4444;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 8px 25px rgba(255, 23, 68, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .use-life-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(255, 23, 68, 0.6);
+        }
+        
+        .use-life-button:active {
+            transform: translateY(-1px);
+        }
+        
+        /* Final Game Over Panel */
+        .final-game-over {
+            max-width: 450px;
+        }
+        
+        .final-title {
+            font-size: 48px;
+            background: linear-gradient(135deg, #FF1744, #D32F2F);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: none;
+            margin-bottom: 30px;
+            animation: pulse-title 1s ease-in-out infinite;
+        }
+        
+        @keyframes pulse-title {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .final-score {
+            font-size: 24px;
+            color: #FFD700;
+            margin-bottom: 30px;
+            padding: 15px;
+            background: rgba(255, 215, 0, 0.1);
+            border: 2px solid #FFD700;
+            border-radius: 10px;
+            font-weight: bold;
+        }
+        
+        .cooldown-message {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255, 100, 100, 0.1);
+            border: 2px solid #FF4444;
+            border-radius: 12px;
+        }
+        
+        .cooldown-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+            animation: bounce-icon 1s ease-in-out infinite;
+        }
+        
+        @keyframes bounce-icon {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .cooldown-text {
+            color: #FF4444;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .cooldown-wait {
+            color: #FFD700;
+            font-size: 20px;
+            font-weight: bold;
+            font-family: monospace;
+            letter-spacing: 2px;
+        }
+        
+        .cooldown-button {
+            width: 100%;
+            padding: 18px;
+            background: rgba(100, 100, 100, 0.5);
+            color: #888;
+            border: 2px solid #666;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: not-allowed;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+        }
+        
+        .cooldown-button:disabled {
+            opacity: 0.6;
+        }
+        
+        .auto-return-message {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, rgba(255, 193, 7, 0.2) 0%, rgba(255, 152, 0, 0.2) 100%);
+            color: #FFD700;
+            border: 2px dashed #FFD700;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 15px;
+            text-align: center;
+            animation: pulse-return 1s ease-in-out infinite;
+        }
+        
+        @keyframes pulse-return {
+            0%, 100% { opacity: 0.8; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.02); }
+        }
+        
+        /* Bloqueio na tela do jogo */
+        .game-blocked-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 15px;
+            z-index: 50;
+        }
+        
+        .game-blocked-content {
+            background: rgba(15, 23, 42, 0.95);
+            border: 3px solid #FF4444;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 0 50px rgba(255, 68, 68, 0.5);
+            max-width: 350px;
+        }
+        
+        .game-blocked-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+            animation: bounce-blocked 1s ease-in-out infinite;
+        }
+        
+        @keyframes bounce-blocked {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .game-blocked-title {
+            color: #FF4444;
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-shadow: 0 0 10px rgba(255, 68, 68, 0.5);
+        }
+        
+        .game-blocked-message {
+            color: #FFD700;
+            font-size: 16px;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+        
+        .game-blocked-timer {
+            color: #22c55e;
+            font-size: 18px;
+            font-weight: bold;
+            font-family: monospace;
+            letter-spacing: 1px;
+        }
+        
         @media (max-width: 768px) {
             .container {
                 gap: 10px;
@@ -564,11 +836,23 @@
                     <div class="stat-label">Recorde Pessoal</div>
                     <div class="stat-value" id="highScore">0</div>
                 </div>
+                <div class="stat">
+                    <div class="stat-label">Vidas</div>
+                    <div class="stat-value" id="livesDisplay">❤️ 3</div>
+                </div>
             </div>
         </div>
         
         <div class="game-wrapper">
             <canvas id="gameCanvas"></canvas>
+            <div class="game-blocked-overlay" id="gameBlockedOverlay" style="display: none;">
+                <div class="game-blocked-content">
+                    <div class="game-blocked-icon">🔒</div>
+                    <div class="game-blocked-title">JOGO BLOQUEADO</div>
+                    <div class="game-blocked-message">Você perdeu todas as suas vidas!</div>
+                    <div class="game-blocked-timer" id="gameBlockedTimer">3:00:00</div>
+                </div>
+            </div>
         </div>
         
         <!-- Painel de Missões -->
@@ -579,6 +863,33 @@
                 <div class="points-earned" id="pointsEarned">+0</div>
             </div>
             <div id="missionsContainer"></div>
+        </div>
+        
+        <!-- Painel Game Over -->
+        <div class="game-over-panel" id="gameOverPanel" style="display: none;">
+            <div class="game-over-content">
+                <div class="game-over-title">⚠️ Perdeu uma Vida!</div>
+                <div class="game-over-message" id="gameOverMessage">3 moedas caíram no chão</div>
+                <div class="game-over-lives" id="gameOverLives">Vidas restantes: <span id="livesRemaining">2</span>/3</div>
+                <button class="use-life-button" onclick="useLive()">💖 Usar uma Vida e Continuar</button>
+            </div>
+        </div>
+        
+        <!-- Painel Game Over Final -->
+        <div class="game-over-panel" id="finalGameOverPanel" style="display: none;">
+            <div class="game-over-content final-game-over">
+                <div class="game-over-title final-title">💀 GAME OVER</div>
+                <div class="final-score" id="finalScore">Pontuação Final: 0</div>
+                <div class="cooldown-message">
+                    <div class="cooldown-icon">⏱️</div>
+                    <div class="cooldown-text">Você perdeu todas as suas vidas!</div>
+                    <div class="cooldown-wait" id="cooldownTimer">Tente novamente em 3:00:00</div>
+                </div>
+                <button class="cooldown-button" id="cooldownBtn" disabled>🔒 Bloqueado por 3 horas</button>
+                <div class="auto-return-message" id="autoReturnMessage">
+                    Voltando em <span id="returnCountdown">20</span>s...
+                </div>
+            </div>
         </div>
         
         <div class="mobile-controls" id="mobileControls">
@@ -622,20 +933,24 @@
         window.addEventListener('resize', resizeCanvas);
         
         const player = {
-            x: canvas.width / 2 - 50,
-            y: canvas.height - 120,
-            width: 100,
-            height: 100,
+            x: canvas.width / 2 - 25,
+            y: canvas.height - 80,
+            width: 50,
+            height: 50,
             speed: 8,
-            targetX: canvas.width / 2 - 50
+            targetX: canvas.width / 2 - 25
         };
         
         let coins = [];
         let score = 0;
         let highScore = parseInt(localStorage.getItem('rhapsHighScore')) || 0;
-        let gameSpeed = 2;
+        let gameSpeed = 1.0;
         let spawnRate = 120;
         let spawnCounter = 0;
+        let lives = 3;
+        let missedCoins = 0;
+        let gamePaused = false;
+        let gameOverPanel = null;
         
         const keys = {};
         window.addEventListener('keydown', (e) => {
@@ -650,9 +965,12 @@
         // Mouse input
         document.addEventListener('mousemove', (e) => {
             const rect = canvas.getBoundingClientRect();
-            if (e.clientX >= rect.left && e.clientX <= rect.right) {
-                mouseX = e.clientX - rect.left;
-            }
+            mouseX = e.clientX - rect.left;
+        });
+        
+        canvas.addEventListener('mousemove', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            mouseX = e.clientX - rect.left;
         });
         
         // Touch input (para celular)
@@ -721,10 +1039,10 @@
         
         function spawnCoin() {
             const coin = {
-                x: Math.random() * (canvas.width - 40),
-                y: -40,
-                width: 40,
-                height: 40,
+                x: Math.random() * (canvas.width - 30),
+                y: -30,
+                width: 30,
+                height: 30,
                 speed: gameSpeed
             };
             coins.push(coin);
@@ -755,10 +1073,12 @@
                 player.x = canvas.width - player.width;
             }
             
-            spawnCounter++;
-            if (spawnCounter > spawnRate) {
-                spawnCoin();
-                spawnCounter = 0;
+            if (!gamePaused) {
+                spawnCounter++;
+                if (spawnCounter > spawnRate) {
+                    spawnCoin();
+                    spawnCounter = 0;
+                }
             }
             
             coins.forEach((coin, index) => {
@@ -766,6 +1086,16 @@
                 
                 if (coin.y > canvas.height) {
                     coins.splice(index, 1);
+                    if (!gamePaused) {
+                        missedCoins++;
+                        if (missedCoins >= 3) {
+                            gamePaused = true;
+                            lives--;
+                            document.getElementById('livesDisplay').textContent = '❤️ ' + lives;
+                            document.getElementById('livesRemaining').textContent = lives;
+                            showGameOverPanel();
+                        }
+                    }
                 }
                 
                 if (rectCollision(player, coin)) {
@@ -794,6 +1124,8 @@
                    rect1.y + rect1.height > rect2.y;
         }
         
+        let wheelRotation = 0;
+        
         function draw() {
             ctx.fillStyle = '#000';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -813,94 +1145,180 @@
                 ctx.stroke();
             }
             
-            // SKATISTA 3D - Renderizar imagem
-            if (window.skaterImage && window.skaterImage.complete) {
-                ctx.save();
-                // Desenhar a imagem do skatista
-                const imgWidth = 50;
-                const imgHeight = 65;
-                ctx.drawImage(
-                    window.skaterImage,
-                    player.x + player.width / 2 - imgWidth / 2,
-                    player.y + player.height / 2 - imgHeight / 2,
-                    imgWidth,
-                    imgHeight
-                );
-                ctx.restore();
-                
-                // === DESENHAR RODAS GIRANDO ===
-                // Atualizar rotação baseado na velocidade
-                wheelRotation += Math.abs(player.vx) * 0.15;
-                
-                // Posições das rodas (relativas ao skatista)
-                const wheelRadius = 3.5;
-                const wheelLeftX = player.x + player.width / 2 - 12;
-                const wheelRightX = player.x + player.width / 2 + 12;
-                const wheelY = player.y + player.height / 2 + 28;
-                
-                // Desenhar rodas com padrão de rotação
-                const drawWheel = (x, y, rotation) => {
-                    ctx.save();
-                    ctx.translate(x, y);
-                    ctx.rotate(rotation);
-                    
-                    // Roda (círculo)
-                    ctx.fillStyle = 'rgba(255, 107, 53, 0.8)';
-                    ctx.shadowColor = 'rgba(0, 0, 0, 0.4)';
-                    ctx.shadowBlur = 6;
-                    ctx.beginPath();
-                    ctx.arc(0, 0, wheelRadius, 0, Math.PI * 2);
-                    ctx.fill();
-                    
-                    // Padrão de rotação (linhas radiais)
-                    ctx.strokeStyle = 'rgba(255, 140, 0, 0.7)';
-                    ctx.lineWidth = 0.8;
-                    for (let i = 0; i < 8; i++) {
-                        const angle = (i / 8) * Math.PI * 2;
-                        ctx.beginPath();
-                        ctx.moveTo(Math.cos(angle) * 1.5, Math.sin(angle) * 1.5);
-                        ctx.lineTo(Math.cos(angle) * wheelRadius, Math.sin(angle) * wheelRadius);
-                        ctx.stroke();
-                    }
-                    
-                    ctx.restore();
-                };
-                
-                // Desenhar as 2 rodas
-                drawWheel(wheelLeftX, wheelY, wheelRotation);
-                drawWheel(wheelRightX, wheelY, wheelRotation);
-            } else {
-                // Fallback: desenho simples enquanto carrega
-                ctx.save();
-                ctx.translate(player.x + player.width / 2, player.y + player.height / 2);
-                ctx.fillStyle = 'rgba(255, 140, 0, 0.3)';
-                ctx.beginPath();
-                ctx.ellipse(0, 0, 20, 28, 0, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.restore();
-            }
+            // Desenhar pintinho 2D com melhor qualidade gráfica
+            ctx.save();
+            ctx.translate(player.x + player.width / 2, player.y + player.height / 2);
+            
+            // Sombra do pintinho
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
+            ctx.beginPath();
+            ctx.ellipse(0, 24, 16.8, 4.8, 0, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Corpo principal (amarelo quente)
+            ctx.fillStyle = '#FFD700';
+            ctx.shadowColor = 'rgba(255, 200, 0, 0.6)';
+            ctx.shadowBlur = 10;
+            ctx.shadowOffsetX = 0;
+            ctx.shadowOffsetY = 1.2;
+            ctx.beginPath();
+            ctx.ellipse(0, 0, 13.2, 15.6, 0, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Contorno do corpo
+            ctx.strokeStyle = '#FFA500';
+            ctx.lineWidth = 1;
+            ctx.stroke();
+            
+            // Peito mais claro
+            ctx.fillStyle = '#FFED4E';
+            ctx.beginPath();
+            ctx.ellipse(0, 2.4, 9.6, 10.8, 0, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Cabeça
+            ctx.fillStyle = '#FFD700';
+            ctx.shadowColor = 'rgba(255, 200, 0, 0.8)';
+            ctx.shadowBlur = 8;
+            ctx.beginPath();
+            ctx.arc(0, -12, 10.8, 0, Math.PI * 2);
+            ctx.fill();
+            
+            ctx.strokeStyle = '#FFA500';
+            ctx.lineWidth = 1;
+            ctx.stroke();
+            
+            // Olho esquerdo
+            ctx.fillStyle = '#000';
+            ctx.beginPath();
+            ctx.arc(-4.8, -14.4, 2.1, 0, Math.PI * 2);
+            ctx.fill();
+            
+            ctx.fillStyle = '#fff';
+            ctx.beginPath();
+            ctx.arc(-4.2, -15, 0.72, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Olho direito
+            ctx.fillStyle = '#000';
+            ctx.beginPath();
+            ctx.arc(4.8, -14.4, 2.1, 0, Math.PI * 2);
+            ctx.fill();
+            
+            ctx.fillStyle = '#fff';
+            ctx.beginPath();
+            ctx.arc(5.4, -15, 0.72, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Bico (laranja)
+            ctx.fillStyle = '#FF8C00';
+            ctx.beginPath();
+            ctx.moveTo(0, -10.8);
+            ctx.lineTo(4.8, -9);
+            ctx.lineTo(0, -7.2);
+            ctx.closePath();
+            ctx.fill();
+            
+            ctx.strokeStyle = '#FF6B00';
+            ctx.lineWidth = 0.6;
+            ctx.stroke();
+            
+            // Crista (pena no topo)
+            ctx.fillStyle = '#FF6347';
+            ctx.shadowColor = 'rgba(255, 99, 71, 0.4)';
+            ctx.shadowBlur = 5;
+            ctx.beginPath();
+            ctx.moveTo(-3, -24);
+            ctx.quadraticCurveTo(-4.8, -30, -3, -22.8);
+            ctx.quadraticCurveTo(0, -31.2, 0, -22.8);
+            ctx.quadraticCurveTo(4.8, -30, 3, -24);
+            ctx.closePath();
+            ctx.fill();
+            
+            ctx.strokeStyle = '#CC3333';
+            ctx.lineWidth = 0.6;
+            ctx.stroke();
+            
+            // Asa esquerda
+            ctx.fillStyle = '#FFA500';
+            ctx.beginPath();
+            ctx.ellipse(-14.4, -1.2, 4.8, 7.2, -0.4, 0, Math.PI * 2);
+            ctx.fill();
+            
+            ctx.strokeStyle = '#FF8C00';
+            ctx.lineWidth = 0.6;
+            ctx.stroke();
+            
+            // Asa direita
+            ctx.fillStyle = '#FFA500';
+            ctx.beginPath();
+            ctx.ellipse(14.4, -1.2, 4.8, 7.2, 0.4, 0, Math.PI * 2);
+            ctx.fill();
+            
+            ctx.strokeStyle = '#FF8C00';
+            ctx.lineWidth = 0.6;
+            ctx.stroke();
+            
+            // Patas (laranja)
+            ctx.strokeStyle = '#FF8C00';
+            ctx.lineWidth = 1.5;
+            ctx.lineCap = 'round';
+            
+            // Pata esquerda
+            ctx.beginPath();
+            ctx.moveTo(-6, 15.6);
+            ctx.lineTo(-6, 22.8);
+            ctx.stroke();
+            
+            ctx.beginPath();
+            ctx.moveTo(-6, 22.8);
+            ctx.lineTo(-8.4, 25.2);
+            ctx.stroke();
+            
+            ctx.beginPath();
+            ctx.moveTo(-6, 22.8);
+            ctx.lineTo(-3.6, 25.2);
+            ctx.stroke();
+            
+            // Pata direita
+            ctx.beginPath();
+            ctx.moveTo(6, 15.6);
+            ctx.lineTo(6, 22.8);
+            ctx.stroke();
+            
+            ctx.beginPath();
+            ctx.moveTo(6, 22.8);
+            ctx.lineTo(3.6, 25.2);
+            ctx.stroke();
+            
+            ctx.beginPath();
+            ctx.moveTo(6, 22.8);
+            ctx.lineTo(8.4, 25.2);
+            ctx.stroke();
+            
+            ctx.restore();
             
             coins.forEach(coin => {
                 ctx.save();
                 ctx.translate(coin.x + coin.width / 2, coin.y + coin.height / 2);
                 
                 ctx.shadowColor = 'rgba(255, 215, 0, 0.8)';
-                ctx.shadowBlur = 20;
+                ctx.shadowBlur = 15;
                 
                 ctx.fillStyle = '#FFD700';
                 ctx.beginPath();
-                ctx.arc(0, 0, 20, 0, Math.PI * 2);
+                ctx.arc(0, 0, 15, 0, Math.PI * 2);
                 ctx.fill();
                 
                 ctx.strokeStyle = '#FFA500';
-                ctx.lineWidth = 3;
+                ctx.lineWidth = 2.25;
                 ctx.stroke();
                 
                 ctx.fillStyle = '#FF6B35';
-                ctx.font = 'bold 28px Arial';
+                ctx.font = 'bold 21px Arial';
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
-                ctx.fillText('R', 0, 2);
+                ctx.fillText('R', 0, 1.5);
                 
                 ctx.restore();
             });
@@ -912,14 +1330,156 @@
             ctx.fillText(`⚡ ${gameSpeed.toFixed(1)}x`, 15, 25);
         }
         
+        // --- SISTEMA DE VIDAS ---
+        function showGameOverPanel() {
+            const panel = document.getElementById('gameOverPanel');
+            panel.style.display = 'flex';
+        }
+        
+        function hideGameOverPanel() {
+            const panel = document.getElementById('gameOverPanel');
+            panel.style.display = 'none';
+        }
+        
+        function useLive() {
+            if (lives > 0) {
+                gamePaused = false;
+                missedCoins = 0;
+                hideGameOverPanel();
+            } else {
+                showFinalGameOver();
+            }
+        }
+        
+        function showFinalGameOver() {
+            hideGameOverPanel();
+            gamePaused = true;
+            coins = [];
+            
+            const now = Date.now();
+            const cooldownTime = 3 * 60 * 60 * 1000; // 3 horas em ms
+            const unlockTime = now + cooldownTime;
+            
+            localStorage.setItem('rhapsGameOverTime', unlockTime);
+            
+            document.getElementById('finalScore').textContent = `Pontuação Final: ${score}`;
+            const finalPanel = document.getElementById('finalGameOverPanel');
+            finalPanel.style.display = 'flex';
+            
+            startCooldownTimer();
+            
+            // Countdown de 20 segundos antes de voltar para tela bloqueada
+            let countdown = 20;
+            const countdownInterval = setInterval(() => {
+                countdown--;
+                document.getElementById('returnCountdown').textContent = countdown;
+                
+                if (countdown <= 0) {
+                    clearInterval(countdownInterval);
+                    finalPanel.style.display = 'none';
+                    showGameBlockedScreen();
+                }
+            }, 1000);
+        }
+        
+        function showGameBlockedScreen() {
+            gamePaused = true;
+            coins = [];
+            score = 0;
+            lives = 3;
+            missedCoins = 0;
+            
+            document.getElementById('gameOverPanel').style.display = 'none';
+            document.getElementById('finalGameOverPanel').style.display = 'none';
+            document.getElementById('gameBlockedOverlay').style.display = 'flex';
+            document.getElementById('livesDisplay').textContent = '❤️ 3';
+            document.getElementById('score').textContent = '0';
+            
+            updateGameBlockedTimer();
+        }
+        
+        function updateGameBlockedTimer() {
+            const updateTimer = () => {
+                const unlockTime = parseInt(localStorage.getItem('rhapsGameOverTime')) || Date.now();
+                const now = Date.now();
+                const remaining = Math.max(0, unlockTime - now);
+                
+                if (remaining <= 0) {
+                    localStorage.removeItem('rhapsGameOverTime');
+                    location.reload();
+                    return;
+                }
+                
+                const hours = Math.floor(remaining / (1000 * 60 * 60));
+                const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((remaining % (1000 * 60)) / 1000);
+                
+                document.getElementById('gameBlockedTimer').textContent = 
+                    `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+                
+                setTimeout(updateTimer, 1000);
+            };
+            
+            updateTimer();
+        }
+        
+        function startCooldownTimer() {
+            const updateTimer = () => {
+                const unlockTime = parseInt(localStorage.getItem('rhapsGameOverTime')) || Date.now();
+                const now = Date.now();
+                const remaining = Math.max(0, unlockTime - now);
+                
+                if (remaining <= 0) {
+                    document.getElementById('cooldownTimer').textContent = 'Pronto! Clique para jogar novamente';
+                    const btn = document.getElementById('cooldownBtn');
+                    btn.disabled = false;
+                    btn.innerHTML = '▶️ Jogar Novamente';
+                    btn.onclick = () => location.reload();
+                    return;
+                }
+                
+                const hours = Math.floor(remaining / (1000 * 60 * 60));
+                const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((remaining % (1000 * 60)) / 1000);
+                
+                document.getElementById('cooldownTimer').textContent = 
+                    `Tente novamente em ${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+                
+                setTimeout(updateTimer, 1000);
+            };
+            
+            updateTimer();
+        }
+        
+        // Verificar cooldown ao carregar
+        window.addEventListener('load', () => {
+            const unlockTime = parseInt(localStorage.getItem('rhapsGameOverTime')) || 0;
+            if (unlockTime > Date.now()) {
+                showGameBlockedScreen();
+            }
+        });
+        
         // --- SISTEMA DE MISSÕES ---
         let totalPointsEarned = 0;
         let lastCheckinDate = localStorage.getItem('lastCheckinDate') || '';
-        let wheelRotation = 0; // Rotação das rodas
+        
+        let missionsPanelOpen = false;
         
         function toggleMissions() {
             const panel = document.getElementById('missionsPanel');
             panel.classList.toggle('show');
+            
+            missionsPanelOpen = panel.classList.contains('show');
+            
+            if (missionsPanelOpen && !gamePaused) {
+                gamePaused = true;
+            } else if (!missionsPanelOpen && gamePaused) {
+                // Só despausa se não estiver em pausa por outro motivo (perda de vida)
+                if (!document.getElementById('gameOverPanel').style.display || 
+                    document.getElementById('gameOverPanel').style.display === 'none') {
+                    gamePaused = false;
+                }
+            }
         }
         
         function addPointsFromMission(points) {
@@ -935,18 +1495,15 @@
             pointsElement.textContent = `+${totalPointsEarned}`;
             mainPointsElement.textContent = `+${totalPointsEarned}`;
             
-            // Animar a adição de pontos (painel de missões)
             pointsElement.classList.remove('pulse');
-            void pointsElement.offsetWidth; // Trigger reflow para reiniciar animação
+            void pointsElement.offsetWidth;
             pointsElement.classList.add('pulse');
             
-            // Animar a adição de pontos (contador principal)
             mainCounter.classList.remove('pulse-main');
-            void mainCounter.offsetWidth; // Trigger reflow para reiniciar animação
+            void mainCounter.offsetWidth;
             mainCounter.classList.add('pulse-main');
         }
         
-        // Check-in Diário
         function dailyCheckin() {
             const today = new Date().toDateString();
             const checkinBtn = document.getElementById('checkinBtn');
@@ -956,35 +1513,20 @@
                 return;
             }
             
-            // Ganhar 15 pontos
             score += 15;
             totalPointsEarned += 15;
             document.getElementById('score').textContent = score;
             updatePointsDisplay();
             
-            // Salvar data do check-in
             lastCheckinDate = today;
             localStorage.setItem('lastCheckinDate', today);
             
-            // Desabilitar botão
             checkinBtn.disabled = true;
             checkinBtn.innerHTML = '<div class="checkin-main">✅ Check-in Realizado</div><div class="checkin-reward">Volte amanhã</div>';
             
-            // Mostrar mensagem de sucesso
             alert('🎉 Check-in realizado! Você ganhou 15 pontos! Volte amanhã para mais!');
         }
         
-        // Carregar imagem do skatista 3D (fundo preto)
-        window.skaterImage = new Image();
-        window.skaterImage.src = '04FTE943coeuDahl';
-        window.skaterImage.onload = function() {
-            console.log('Skatista 3D carregado com sucesso!');
-        };
-        window.skaterImage.onerror = function() {
-            console.log('Erro ao carregar skatista 3D, usando fallback');
-        };
-        
-        // Verificar se pode fazer check-in ao carregar a página
         window.addEventListener('load', function() {
             const today = new Date().toDateString();
             const checkinBtn = document.getElementById('checkinBtn');
@@ -1054,31 +1596,32 @@
         function completeMission(missionId) {
             const mission = missions.find(m => m.id === missionId);
             if (mission && !mission.completed) {
-                // Abrir link do Twitter em nova aba
                 window.open(mission.url, '_blank');
                 
-                // Marcar como completa e adicionar pontos
                 mission.completed = true;
                 score += mission.reward;
                 document.getElementById('score').textContent = score;
                 
-                // Adicionar aos pontos de missões ganhos
                 addPointsFromMission(mission.reward);
                 
-                // Atualizar visual
                 renderMissions();
             }
         }
         
-        // Inicializar missões
         renderMissions();
         
         function gameLoop() {
-            update();
+            if (!gamePaused) {
+                update();
+            }
             draw();
             requestAnimationFrame(gameLoop);
         }
         
+        gameLoop();
+    </script>
+</body>
+</html>
         gameLoop();
     </script>
 </body>
