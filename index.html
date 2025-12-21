@@ -84,7 +84,10 @@
         }
         
         canvas {
-            background: #000;
+            background-image: url('6NDuxzaZgwx22dSMhK6lf'), linear-gradient(135deg, rgba(15, 23, 41, 0.5) 0%, rgba(26, 35, 64, 0.5) 100%);
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
             border-radius: 15px;
             box-shadow: 0 0 50px rgba(34, 197, 94, 0.5), inset 0 0 50px rgba(34, 197, 94, 0.1);
             display: block;
@@ -117,6 +120,360 @@
             align-items: center;
             gap: 8px;
             color: #22c55e;
+        }
+        
+        /* Painel de Missões */
+        .missions-panel {
+            position: fixed;
+            right: 20px;
+            top: 120px;
+            width: 300px;
+            background: rgba(15, 23, 42, 0.95);
+            border: 2px solid rgba(34, 197, 94, 0.4);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 0 40px rgba(34, 197, 94, 0.3);
+            max-height: 70vh;
+            overflow-y: auto;
+            z-index: 100;
+            display: none;
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        .missions-panel.show {
+            display: block;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .missions-close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            color: #22c55e;
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .missions-close:hover {
+            color: #16a34a;
+            transform: scale(1.2);
+        }
+        
+        /* Botão Missões */
+        .missions-button {
+            padding: 14px 28px;
+            background: linear-gradient(135deg, #FF8C00 0%, #FF6B00 50%, #FF5500 100%);
+            color: white;
+            border: 2px solid #FFB84D;
+            border-radius: 12px;
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 8px 25px rgba(255, 140, 0, 0.4);
+            margin-top: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .missions-button::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transform: rotate(45deg);
+            animation: shine 3s infinite;
+        }
+        
+        @keyframes shine {
+            0% {
+                transform: translateX(-100%) translateY(-100%) rotate(45deg);
+            }
+            100% {
+                transform: translateX(100%) translateY(100%) rotate(45deg);
+            }
+        }
+        
+        .missions-button:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 35px rgba(255, 140, 0, 0.7);
+            border-color: #FFD700;
+        }
+        
+        .missions-button:active {
+            transform: translateY(-2px);
+        }
+        
+        /* Botão Check-in Diário */
+        .checkin-button {
+            padding: 10px 14px;
+            background: linear-gradient(135deg, #FF8C00 0%, #FF6B00 50%, #FF5500 100%);
+            color: white;
+            border: 2px solid #FFB84D;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 6px 18px rgba(255, 140, 0, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            min-width: 130px;
+        }
+        
+        .checkin-main {
+            font-size: 13px;
+            font-weight: bold;
+            color: white;
+        }
+        
+        .checkin-reward {
+            font-size: 10px;
+            color: #000;
+            font-weight: 600;
+        }
+        
+        .checkin-button::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transform: rotate(45deg);
+            animation: shine 3s infinite;
+        }
+        
+        .checkin-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 28px rgba(255, 140, 0, 0.7);
+            border-color: #FFD700;
+        }
+        
+        .checkin-button:active {
+            transform: translateY(-1px);
+        }
+        
+        .checkin-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            box-shadow: 0 4px 12px rgba(255, 140, 0, 0.2);
+        }
+        
+        .checkin-button:disabled:hover {
+            transform: none;
+        }
+        
+        .checkin-button:disabled .checkin-main {
+            color: #888;
+        }
+        
+        .checkin-button:disabled .checkin-reward {
+            color: #666;
+        }
+        
+
+        
+        .missions-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(34, 197, 94, 0.2);
+        }
+        
+        .points-earned {
+            font-size: 18px;
+            font-weight: bold;
+            color: #22c55e;
+            background: rgba(34, 197, 94, 0.1);
+            padding: 6px 12px;
+            border-radius: 8px;
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            box-shadow: 0 0 10px rgba(34, 197, 94, 0.2);
+            transition: all 0.3s;
+        }
+        
+        .points-earned.pulse {
+            animation: pointsPulse 0.6s ease-out;
+        }
+        
+        @keyframes pointsPulse {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 0 10px rgba(34, 197, 94, 0.2);
+            }
+            50% {
+                transform: scale(1.15);
+                box-shadow: 0 0 25px rgba(34, 197, 94, 0.8);
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 10px rgba(34, 197, 94, 0.2);
+            }
+        }
+        
+        /* Contador de Pontos Principal */
+        .points-counter {
+            background: linear-gradient(135deg, rgba(255, 140, 0, 0.15) 0%, rgba(255, 215, 0, 0.1) 100%);
+            border: 2px solid rgba(255, 140, 0, 0.5);
+            border-radius: 12px;
+            padding: 12px 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            min-width: 160px;
+            box-shadow: 0 6px 20px rgba(255, 140, 0, 0.25);
+            transition: all 0.3s;
+        }
+        
+        .points-counter:hover {
+            border-color: rgba(255, 140, 0, 0.8);
+            box-shadow: 0 8px 30px rgba(255, 140, 0, 0.4);
+            transform: translateY(-2px);
+        }
+        
+        .points-label {
+            font-size: 11px;
+            font-weight: bold;
+            color: rgba(255, 140, 0, 0.7);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .points-value {
+            font-size: 24px;
+            font-weight: 900;
+            background: linear-gradient(135deg, #FF8C00 0%, #FFB84D 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            transition: all 0.3s;
+        }
+        
+        .points-counter.pulse-main {
+            animation: counterPulse 0.6s ease-out;
+        }
+        
+        @keyframes counterPulse {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 6px 20px rgba(255, 140, 0, 0.25);
+            }
+            50% {
+                transform: scale(1.08);
+                box-shadow: 0 10px 40px rgba(255, 140, 0, 0.6);
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: 0 6px 20px rgba(255, 140, 0, 0.25);
+            }
+        }
+        
+        .missions-title {
+            color: #22c55e;
+            font-size: 18px;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(34, 197, 94, 0.5);
+            margin-bottom: 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(34, 197, 94, 0.3);
+            padding-bottom: 10px;
+        }
+        
+        .mission-item {
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            transition: all 0.3s;
+        }
+        
+        .mission-item:hover {
+            background: rgba(34, 197, 94, 0.2);
+            border-color: rgba(34, 197, 94, 0.6);
+            box-shadow: 0 0 15px rgba(34, 197, 94, 0.4);
+        }
+        
+        .mission-name {
+            color: #22c55e;
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .mission-desc {
+            color: #aaa;
+            font-size: 12px;
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+        
+        .mission-reward {
+            color: #FFD700;
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .mission-btn {
+            width: 100%;
+            padding: 10px;
+            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+            transition: all 0.3s;
+            box-shadow: 0 0 10px rgba(34, 197, 94, 0.4);
+        }
+        
+        .mission-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 20px rgba(34, 197, 94, 0.6);
+        }
+        
+        .mission-btn:active {
+            transform: translateY(0);
+        }
+        
+        .mission-btn.completed {
+            background: rgba(100, 100, 100, 0.5);
+            color: #888;
+            cursor: not-allowed;
         }
         
         /* Mobile controls */
@@ -214,6 +571,16 @@
             <canvas id="gameCanvas"></canvas>
         </div>
         
+        <!-- Painel de Missões -->
+        <div class="missions-panel" id="missionsPanel">
+            <button class="missions-close" onclick="toggleMissions()">✕</button>
+            <div class="missions-header">
+                <div class="missions-title">📋 Missões</div>
+                <div class="points-earned" id="pointsEarned">+0</div>
+            </div>
+            <div id="missionsContainer"></div>
+        </div>
+        
         <div class="mobile-controls" id="mobileControls">
             <button class="control-btn" id="leftBtn">←</button>
             <button class="control-btn" id="rightBtn">→</button>
@@ -226,6 +593,17 @@
                 </div>
                 <div class="instruction-item">
                     ⚡ <strong>Dica:</strong> A velocidade aumenta conforme você pega moedas!
+                </div>
+            </div>
+            <div style="display: flex; gap: 15px; align-items: center; justify-content: center; flex-wrap: wrap;">
+                <button class="missions-button" onclick="toggleMissions()">📋 Missões</button>
+                <button class="checkin-button" id="checkinBtn" onclick="dailyCheckin()">
+                    <div class="checkin-main">✅ Check-in Diário</div>
+                    <div class="checkin-reward">+ 15 pontos</div>
+                </button>
+                <div class="points-counter" id="mainPointsCounter">
+                    <div class="points-label">Pontos de Missões</div>
+                    <div class="points-value" id="mainPoints">+0</div>
                 </div>
             </div>
         </div>
@@ -435,66 +813,72 @@
                 ctx.stroke();
             }
             
-            ctx.save();
-            ctx.translate(player.x + player.width / 2, player.y + player.height / 2);
-            
-            ctx.shadowColor = 'rgba(34, 197, 94, 0.5)';
-            ctx.shadowBlur = 20;
-            
-            ctx.fillStyle = '#00d4ff';
-            ctx.shadowColor = 'rgba(0, 212, 255, 0.6)';
-            ctx.shadowBlur = 15;
-            ctx.fillRect(-20, -10, 40, 45);
-            
-            ctx.fillStyle = '#22c55e';
-            ctx.shadowColor = 'rgba(34, 197, 94, 0.6)';
-            ctx.shadowBlur = 15;
-            ctx.beginPath();
-            ctx.arc(0, -25, 18, 0, Math.PI * 2);
-            ctx.fill();
-            
-            ctx.fillStyle = '#00ffff';
-            ctx.shadowColor = 'rgba(0, 255, 255, 0.8)';
-            ctx.shadowBlur = 10;
-            ctx.beginPath();
-            ctx.arc(-8, -28, 4, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.beginPath();
-            ctx.arc(8, -28, 4, 0, Math.PI * 2);
-            ctx.fill();
-            
-            ctx.fillStyle = '#000';
-            ctx.shadowColor = 'rgba(0, 0, 0, 0)';
-            ctx.shadowBlur = 0;
-            ctx.beginPath();
-            ctx.arc(-8, -28, 2, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.beginPath();
-            ctx.arc(8, -28, 2, 0, Math.PI * 2);
-            ctx.fill();
-            
-            ctx.strokeStyle = '#22c55e';
-            ctx.lineWidth = 3;
-            ctx.shadowColor = 'rgba(34, 197, 94, 0.5)';
-            ctx.shadowBlur = 10;
-            ctx.beginPath();
-            ctx.arc(0, -20, 6, 0, Math.PI);
-            ctx.stroke();
-            
-            ctx.strokeStyle = '#00ffff';
-            ctx.lineWidth = 2;
-            ctx.shadowColor = 'rgba(0, 255, 255, 0.5)';
-            ctx.shadowBlur = 8;
-            ctx.beginPath();
-            ctx.moveTo(-12, -35);
-            ctx.lineTo(-15, -45);
-            ctx.stroke();
-            ctx.beginPath();
-            ctx.moveTo(12, -35);
-            ctx.lineTo(15, -45);
-            ctx.stroke();
-            
-            ctx.restore();
+            // SKATISTA 3D - Renderizar imagem
+            if (window.skaterImage && window.skaterImage.complete) {
+                ctx.save();
+                // Desenhar a imagem do skatista
+                const imgWidth = 50;
+                const imgHeight = 65;
+                ctx.drawImage(
+                    window.skaterImage,
+                    player.x + player.width / 2 - imgWidth / 2,
+                    player.y + player.height / 2 - imgHeight / 2,
+                    imgWidth,
+                    imgHeight
+                );
+                ctx.restore();
+                
+                // === DESENHAR RODAS GIRANDO ===
+                // Atualizar rotação baseado na velocidade
+                wheelRotation += Math.abs(player.vx) * 0.15;
+                
+                // Posições das rodas (relativas ao skatista)
+                const wheelRadius = 3.5;
+                const wheelLeftX = player.x + player.width / 2 - 12;
+                const wheelRightX = player.x + player.width / 2 + 12;
+                const wheelY = player.y + player.height / 2 + 28;
+                
+                // Desenhar rodas com padrão de rotação
+                const drawWheel = (x, y, rotation) => {
+                    ctx.save();
+                    ctx.translate(x, y);
+                    ctx.rotate(rotation);
+                    
+                    // Roda (círculo)
+                    ctx.fillStyle = 'rgba(255, 107, 53, 0.8)';
+                    ctx.shadowColor = 'rgba(0, 0, 0, 0.4)';
+                    ctx.shadowBlur = 6;
+                    ctx.beginPath();
+                    ctx.arc(0, 0, wheelRadius, 0, Math.PI * 2);
+                    ctx.fill();
+                    
+                    // Padrão de rotação (linhas radiais)
+                    ctx.strokeStyle = 'rgba(255, 140, 0, 0.7)';
+                    ctx.lineWidth = 0.8;
+                    for (let i = 0; i < 8; i++) {
+                        const angle = (i / 8) * Math.PI * 2;
+                        ctx.beginPath();
+                        ctx.moveTo(Math.cos(angle) * 1.5, Math.sin(angle) * 1.5);
+                        ctx.lineTo(Math.cos(angle) * wheelRadius, Math.sin(angle) * wheelRadius);
+                        ctx.stroke();
+                    }
+                    
+                    ctx.restore();
+                };
+                
+                // Desenhar as 2 rodas
+                drawWheel(wheelLeftX, wheelY, wheelRotation);
+                drawWheel(wheelRightX, wheelY, wheelRotation);
+            } else {
+                // Fallback: desenho simples enquanto carrega
+                ctx.save();
+                ctx.translate(player.x + player.width / 2, player.y + player.height / 2);
+                ctx.fillStyle = 'rgba(255, 140, 0, 0.3)';
+                ctx.beginPath();
+                ctx.ellipse(0, 0, 20, 28, 0, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
             
             coins.forEach(coin => {
                 ctx.save();
@@ -513,10 +897,10 @@
                 ctx.stroke();
                 
                 ctx.fillStyle = '#FF6B35';
-                ctx.font = 'bold 24px Arial';
+                ctx.font = 'bold 28px Arial';
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
-                ctx.fillText('₿', 0, 0);
+                ctx.fillText('R', 0, 2);
                 
                 ctx.restore();
             });
@@ -527,6 +911,167 @@
             ctx.shadowBlur = 8;
             ctx.fillText(`⚡ ${gameSpeed.toFixed(1)}x`, 15, 25);
         }
+        
+        // --- SISTEMA DE MISSÕES ---
+        let totalPointsEarned = 0;
+        let lastCheckinDate = localStorage.getItem('lastCheckinDate') || '';
+        let wheelRotation = 0; // Rotação das rodas
+        
+        function toggleMissions() {
+            const panel = document.getElementById('missionsPanel');
+            panel.classList.toggle('show');
+        }
+        
+        function addPointsFromMission(points) {
+            totalPointsEarned += points;
+            updatePointsDisplay();
+        }
+        
+        function updatePointsDisplay() {
+            const pointsElement = document.getElementById('pointsEarned');
+            const mainPointsElement = document.getElementById('mainPoints');
+            const mainCounter = document.getElementById('mainPointsCounter');
+            
+            pointsElement.textContent = `+${totalPointsEarned}`;
+            mainPointsElement.textContent = `+${totalPointsEarned}`;
+            
+            // Animar a adição de pontos (painel de missões)
+            pointsElement.classList.remove('pulse');
+            void pointsElement.offsetWidth; // Trigger reflow para reiniciar animação
+            pointsElement.classList.add('pulse');
+            
+            // Animar a adição de pontos (contador principal)
+            mainCounter.classList.remove('pulse-main');
+            void mainCounter.offsetWidth; // Trigger reflow para reiniciar animação
+            mainCounter.classList.add('pulse-main');
+        }
+        
+        // Check-in Diário
+        function dailyCheckin() {
+            const today = new Date().toDateString();
+            const checkinBtn = document.getElementById('checkinBtn');
+            
+            if (lastCheckinDate === today) {
+                alert('✅ Você já fez check-in hoje! Volte amanhã para ganhar mais 15 pontos!');
+                return;
+            }
+            
+            // Ganhar 15 pontos
+            score += 15;
+            totalPointsEarned += 15;
+            document.getElementById('score').textContent = score;
+            updatePointsDisplay();
+            
+            // Salvar data do check-in
+            lastCheckinDate = today;
+            localStorage.setItem('lastCheckinDate', today);
+            
+            // Desabilitar botão
+            checkinBtn.disabled = true;
+            checkinBtn.innerHTML = '<div class="checkin-main">✅ Check-in Realizado</div><div class="checkin-reward">Volte amanhã</div>';
+            
+            // Mostrar mensagem de sucesso
+            alert('🎉 Check-in realizado! Você ganhou 15 pontos! Volte amanhã para mais!');
+        }
+        
+        // Carregar imagem do skatista 3D (fundo preto)
+        window.skaterImage = new Image();
+        window.skaterImage.src = '04FTE943coeuDahl';
+        window.skaterImage.onload = function() {
+            console.log('Skatista 3D carregado com sucesso!');
+        };
+        window.skaterImage.onerror = function() {
+            console.log('Erro ao carregar skatista 3D, usando fallback');
+        };
+        
+        // Verificar se pode fazer check-in ao carregar a página
+        window.addEventListener('load', function() {
+            const today = new Date().toDateString();
+            const checkinBtn = document.getElementById('checkinBtn');
+            
+            if (lastCheckinDate === today) {
+                checkinBtn.disabled = true;
+                checkinBtn.textContent = '✅ Check-in Realizado';
+            }
+        });
+        
+        const missions = [
+            {
+                id: 'follow_twitter',
+                name: '🐦 Seguir Twitter',
+                desc: 'Siga nosso perfil no Twitter',
+                reward: 50,
+                url: 'https://twitter.com/rhapsodycoin',
+                completed: false
+            },
+            {
+                id: 'like_tweet',
+                name: '❤️ Curtir Tweet',
+                desc: 'Curta nosso último tweet',
+                reward: 30,
+                url: 'https://twitter.com/rhapsodycoin',
+                completed: false
+            },
+            {
+                id: 'follow_instagram',
+                name: '📸 Seguir Instagram',
+                desc: 'Siga nosso perfil no Instagram',
+                reward: 50,
+                url: 'https://instagram.com/rhapsodycoin',
+                completed: false
+            },
+            {
+                id: 'like_instagram',
+                name: '❤️ Curtir Post',
+                desc: 'Curta nosso último post no Instagram',
+                reward: 30,
+                url: 'https://instagram.com/rhapsodycoin',
+                completed: false
+            }
+        ];
+        
+        function renderMissions() {
+            const container = document.getElementById('missionsContainer');
+            container.innerHTML = '';
+            
+            missions.forEach(mission => {
+                const missionEl = document.createElement('div');
+                missionEl.className = 'mission-item';
+                missionEl.innerHTML = `
+                    <div class="mission-name">${mission.name}</div>
+                    <div class="mission-desc">${mission.desc}</div>
+                    <div class="mission-reward">💰 +${mission.reward} pontos</div>
+                    <button class="mission-btn ${mission.completed ? 'completed' : ''}" 
+                            onclick="completeMission('${mission.id}')"
+                            ${mission.completed ? 'disabled' : ''}>
+                        ${mission.completed ? '✅ Concluída' : '🎯 Completar'}
+                    </button>
+                `;
+                container.appendChild(missionEl);
+            });
+        }
+        
+        function completeMission(missionId) {
+            const mission = missions.find(m => m.id === missionId);
+            if (mission && !mission.completed) {
+                // Abrir link do Twitter em nova aba
+                window.open(mission.url, '_blank');
+                
+                // Marcar como completa e adicionar pontos
+                mission.completed = true;
+                score += mission.reward;
+                document.getElementById('score').textContent = score;
+                
+                // Adicionar aos pontos de missões ganhos
+                addPointsFromMission(mission.reward);
+                
+                // Atualizar visual
+                renderMissions();
+            }
+        }
+        
+        // Inicializar missões
+        renderMissions();
         
         function gameLoop() {
             update();
