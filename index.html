@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rhaps Catcher - Jogo de Coleta</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
@@ -896,6 +897,7 @@
             { id: 'instagram-like', title: 'Curtir Novo Post (IG)', description: 'Curta nosso último post no Instagram', icon: '💕', points: 50, url: 'https://www.instagram.com/rhapsodycoin/', isDaily: true },
             { id: 'linkedin-follow', title: 'Seguir LinkedIn', description: 'Siga nosso perfil no LinkedIn', icon: '💼', points: 100, url: 'https://www.linkedin.com/company/rhapsody-coin/', isDaily: false },
             { id: 'linkedin-like', title: 'Curtir Novo Post (LinkedIn)', description: 'Curta nosso último post no LinkedIn', icon: '👍', points: 50, url: 'https://www.linkedin.com/company/rhapsody-coin/', isDaily: true },
+            { id: 'musicplayce-download', title: 'Baixar App Musicplayce', description: 'Baixe o App Musicplayce para ganhar mais Rhaps', icon: '🎵', points: 200, url: 'https://musicplayce.com/', isDaily: false },
         ];
 
         // ============ LEADERBOARD ============
@@ -980,6 +982,24 @@
             cooldownDisplayInterval = setInterval(updateDisplay, 1000);
         }
 
+        // ============ TELEGRAM WEB APP ============
+        function initTelegram() {
+            if (window.Telegram && window.Telegram.WebApp) {
+                const tg = window.Telegram.WebApp;
+                tg.ready();
+
+                const user = tg.initDataUnsafe.user;
+                if (user) {
+                    const telegramUsername = user.username || `User_${user.id}`;
+                    gameState.playerName = `@${telegramUsername}`;
+                    localStorage.setItem('rhapsPlayerName', gameState.playerName);
+                    
+                    // Atualiza a UI com o nome do Telegram
+                    document.getElementById('userInfo').textContent = `👤 ${gameState.playerName}`;
+                }
+            }
+        }
+
         // ============ ATUALIZAÇÃO DO COUNTDOWN DAS MISSÕES ============
         let missionUpdateInterval = null;
 
@@ -996,6 +1016,9 @@
 
         // ============ INICIALIZAÇÃO ============
         window.addEventListener('load', () => {
+            // Inicializa Telegram Web App
+            initTelegram();
+
             const toggle = document.getElementById('soundToggle');
             if (!soundEnabled) {
                 toggle.classList.add('muted');
