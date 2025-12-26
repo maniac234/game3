@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rhaps Catcher - Jogo de Coleta</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-database.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
@@ -81,9 +84,9 @@
             border-radius: 16px;
             font-weight: 800;
             cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.23, 1, 0.320, 1);
+            transition: all 0.35s cubic-bezier(0.23, 1, 0.320, 1);
             font-size: 16px;
-            letter-spacing: 0.4px;
+            letter-spacing: 0.5px;
             text-transform: uppercase;
             display: flex;
             align-items: center;
@@ -93,49 +96,148 @@
             position: relative;
             overflow: hidden;
             animation: slideUp 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            filter: brightness(1);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        button:hover:not(:disabled)::before {
+            left: 100%;
         }
 
         .btn-checkin {
-            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 60%, #1d4ed8 100%);
             color: white;
-            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.4), 0 0 50px rgba(59, 130, 246, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.3);
-            border: 2px solid rgba(59, 130, 246, 0.5);
+            box-shadow: 
+                0 8px 32px rgba(59, 130, 246, 0.45),
+                0 0 60px rgba(59, 130, 246, 0.25),
+                inset 0 1px 2px rgba(255, 255, 255, 0.4),
+                inset 0 -2px 4px rgba(0, 0, 0, 0.2);
+            border: 2px solid rgba(59, 130, 246, 0.6);
         }
 
         .btn-checkin:hover:not(:disabled) {
-            transform: translateY(-4px);
-            box-shadow: 0 14px 40px rgba(59, 130, 246, 0.6), 0 0 60px rgba(59, 130, 246, 0.35), inset 0 1px 1px rgba(255, 255, 255, 0.4);
+            transform: translateY(-5px);
+            box-shadow: 
+                0 16px 48px rgba(59, 130, 246, 0.6),
+                0 0 80px rgba(59, 130, 246, 0.4),
+                inset 0 1px 2px rgba(255, 255, 255, 0.5),
+                inset 0 -2px 4px rgba(0, 0, 0, 0.2);
+            border-color: rgba(59, 130, 246, 0.8);
+            filter: brightness(1.15);
         }
 
         .btn-checkin:active:not(:disabled) {
             transform: translateY(-2px);
+            box-shadow: 
+                0 8px 24px rgba(59, 130, 246, 0.5),
+                inset 0 2px 6px rgba(0, 0, 0, 0.2);
             animation: coinPing 0.4s ease;
         }
 
+        .btn-checkin:disabled {
+            opacity: 0.6;
+            filter: grayscale(30%);
+            cursor: not-allowed;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+        }
+
+        .checkin-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .checkin-subtext {
+            font-size: 10px;
+            color: #FFD700;
+            font-weight: 600;
+            margin-top: 2px;
+        }
+
         .btn-missions {
-            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+            background: linear-gradient(135deg, #f97316 0%, #ea580c 60%, #dc2626 100%);
             color: white;
-            box-shadow: 0 10px 30px rgba(249, 115, 22, 0.4), 0 0 50px rgba(249, 115, 22, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.3);
-            border: 2px solid rgba(249, 115, 22, 0.5);
+            box-shadow: 
+                0 8px 32px rgba(249, 115, 22, 0.45),
+                0 0 60px rgba(249, 115, 22, 0.25),
+                inset 0 1px 2px rgba(255, 255, 255, 0.4),
+                inset 0 -2px 4px rgba(0, 0, 0, 0.2);
+            border: 2px solid rgba(249, 115, 22, 0.6);
             height: 52px;
         }
 
         .btn-missions:hover:not(:disabled) {
-            transform: translateY(-4px);
-            box-shadow: 0 14px 40px rgba(249, 115, 22, 0.6), 0 0 60px rgba(249, 115, 22, 0.35), inset 0 1px 1px rgba(255, 255, 255, 0.4);
+            transform: translateY(-5px);
+            box-shadow: 
+                0 16px 48px rgba(249, 115, 22, 0.6),
+                0 0 80px rgba(249, 115, 22, 0.4),
+                inset 0 1px 2px rgba(255, 255, 255, 0.5),
+                inset 0 -2px 4px rgba(0, 0, 0, 0.2);
+            border-color: rgba(249, 115, 22, 0.8);
+            filter: brightness(1.15);
+        }
+
+        .btn-missions:active:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 
+                0 8px 24px rgba(249, 115, 22, 0.5),
+                inset 0 2px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-missions:disabled {
+            opacity: 0.6;
+            filter: grayscale(30%);
+            cursor: not-allowed;
+            box-shadow: 0 4px 12px rgba(249, 115, 22, 0.2);
         }
 
         .btn-leaderboard {
-            background: linear-gradient(135deg, #a855f7 0%, #9333ea 100%);
+            background: linear-gradient(135deg, #a855f7 0%, #9333ea 60%, #7e22ce 100%);
             color: white;
-            box-shadow: 0 10px 30px rgba(168, 85, 247, 0.4), 0 0 50px rgba(168, 85, 247, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.3);
-            border: 2px solid rgba(168, 85, 247, 0.5);
+            box-shadow: 
+                0 8px 32px rgba(168, 85, 247, 0.45),
+                0 0 60px rgba(168, 85, 247, 0.25),
+                inset 0 1px 2px rgba(255, 255, 255, 0.4),
+                inset 0 -2px 4px rgba(0, 0, 0, 0.2);
+            border: 2px solid rgba(168, 85, 247, 0.6);
             height: 52px;
         }
 
         .btn-leaderboard:hover:not(:disabled) {
-            transform: translateY(-4px);
-            box-shadow: 0 14px 40px rgba(168, 85, 247, 0.6), 0 0 60px rgba(168, 85, 247, 0.35), inset 0 1px 1px rgba(255, 255, 255, 0.4);
+            transform: translateY(-5px);
+            box-shadow: 
+                0 16px 48px rgba(168, 85, 247, 0.6),
+                0 0 80px rgba(168, 85, 247, 0.4),
+                inset 0 1px 2px rgba(255, 255, 255, 0.5),
+                inset 0 -2px 4px rgba(0, 0, 0, 0.2);
+            border-color: rgba(168, 85, 247, 0.8);
+            filter: brightness(1.15);
+        }
+
+        .btn-leaderboard:active:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 
+                0 8px 24px rgba(168, 85, 247, 0.5),
+                inset 0 2px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-leaderboard:disabled {
+            opacity: 0.6;
+            filter: grayscale(30%);
+            cursor: not-allowed;
+            box-shadow: 0 4px 12px rgba(168, 85, 247, 0.2);
         }
 
         .stats {
@@ -316,13 +418,13 @@
         .mission-info h4 {
             color: #fff;
             margin-bottom: 6px;
-            font-size: 17px;
+            font-size: 9.56px;
             font-weight: 700;
         }
 
         .mission-info p {
             color: #e5e7eb;
-            font-size: 14px;
+            font-size: 7.88px;
             margin-bottom: 0;
         }
 
@@ -334,35 +436,81 @@
         }
 
         .mission-btn {
-            padding: 10px 20px;
+            padding: 10px 28px;
             background: linear-gradient(135deg, #10b981 0%, #059669 100%);
             color: white;
             border: none;
-            border-radius: 12px;
+            border-radius: 24px;
             cursor: pointer;
-            font-weight: 700;
-            font-size: 13px;
-            transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+            font-weight: 800;
+            font-size: 12px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
             width: auto;
             margin-top: 14px;
-            display: inline-block;
-            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 
+                0 8px 24px rgba(16, 185, 129, 0.4),
+                0 0 20px rgba(16, 185, 129, 0.15),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .mission-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .mission-btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .mission-btn:hover:not(:disabled)::before {
+            left: 100%;
         }
 
         .mission-btn:hover:not(:disabled) {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 18px rgba(16, 185, 129, 0.5);
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: 
+                0 12px 40px rgba(16, 185, 129, 0.6),
+                0 0 30px rgba(16, 185, 129, 0.25),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+            filter: brightness(1.2);
         }
 
         .mission-btn:active:not(:disabled) {
-            transform: translateY(-1px);
+            transform: translateY(-2px) scale(0.98);
+            box-shadow: 
+                0 4px 12px rgba(16, 185, 129, 0.4),
+                inset 0 2px 6px rgba(0, 0, 0, 0.15);
         }
 
         .mission-btn:disabled {
-            background: linear-gradient(135deg, #4b5563, #3d4451);
+            background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
             cursor: not-allowed;
             opacity: 0.5;
             -webkit-tap-highlight-color: transparent;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            filter: grayscale(50%);
+            transform: translateY(0);
         }
 
         /* LEADERBOARD STYLES */
@@ -497,29 +645,68 @@
         }
 
         .game-over-btn {
-            background: linear-gradient(135deg, #10b981, #059669);
+            background: linear-gradient(135deg, #10b981 0%, #059669 60%, #047857 100%);
             color: white;
-            border: none;
+            border: 2px solid rgba(16, 185, 129, 0.6);
             padding: 18px 60px;
-            border-radius: 12px;
+            border-radius: 14px;
             font-size: 18px;
-            font-weight: 700;
+            font-weight: 900;
+            letter-spacing: 0.5px;
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+            transition: all 0.35s cubic-bezier(0.23, 1, 0.32, 1);
+            box-shadow: 
+                0 8px 32px rgba(16, 185, 129, 0.4),
+                0 0 60px rgba(16, 185, 129, 0.2),
+                inset 0 1px 2px rgba(255, 255, 255, 0.3),
+                inset 0 -2px 4px rgba(0, 0, 0, 0.1);
             margin-top: 30px;
             animation: slideUp 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
             animation-delay: 0.3s;
+            position: relative;
+            overflow: hidden;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .game-over-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .game-over-btn:hover:not(:disabled)::before {
+            left: 100%;
         }
 
         .game-over-btn:hover:not(:disabled) {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.5);
+            transform: translateY(-5px);
+            box-shadow: 
+                0 14px 48px rgba(16, 185, 129, 0.6),
+                0 0 80px rgba(16, 185, 129, 0.35),
+                inset 0 1px 2px rgba(255, 255, 255, 0.4),
+                inset 0 -2px 4px rgba(0, 0, 0, 0.1);
+            border-color: rgba(16, 185, 129, 0.8);
+            filter: brightness(1.15);
+        }
+
+        .game-over-btn:active:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 
+                0 6px 20px rgba(16, 185, 129, 0.4),
+                inset 0 2px 6px rgba(0, 0, 0, 0.1);
         }
 
         .game-over-btn:disabled {
-            opacity: 0.5;
+            opacity: 0.6;
             cursor: not-allowed;
+            filter: grayscale(30%);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+            transform: translateY(0);
         }
 
         /* PARTICLE EFFECTS */
@@ -532,31 +719,74 @@
         /* SOUND TOGGLE */
         .sound-toggle {
             position: fixed;
-            bottom: 20px;
+            top: 50%;
             right: 20px;
-            background: linear-gradient(135deg, #3b82f6, #2563eb);
-            border: 2px solid rgba(59, 130, 246, 0.5);
+            transform: translateY(-50%);
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 60%, #1d4ed8 100%);
+            border: 2px solid rgba(59, 130, 246, 0.6);
             width: 50px;
             height: 50px;
             border-radius: 50%;
             color: white;
             font-size: 24px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.35s cubic-bezier(0.23, 1, 0.32, 1);
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+            box-shadow: 
+                0 6px 24px rgba(59, 130, 246, 0.4),
+                0 0 48px rgba(59, 130, 246, 0.15),
+                inset 0 1px 2px rgba(255, 255, 255, 0.3);
+            position: relative;
+            overflow: hidden;
+            z-index: 999;
+        }
+
+        .sound-toggle::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            pointer-events: none;
         }
 
         .sound-toggle:hover {
-            transform: scale(1.1);
-            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.5);
+            transform: translateY(-50%) scale(1.12);
+            box-shadow: 
+                0 10px 36px rgba(59, 130, 246, 0.6),
+                0 0 60px rgba(59, 130, 246, 0.25),
+                inset 0 1px 2px rgba(255, 255, 255, 0.4);
+            filter: brightness(1.2);
+        }
+
+        .sound-toggle:active {
+            transform: translateY(-50%) scale(0.95);
+            box-shadow: 
+                0 4px 16px rgba(59, 130, 246, 0.3),
+                inset 0 2px 6px rgba(0, 0, 0, 0.15);
         }
 
         .sound-toggle.muted {
-            background: linear-gradient(135deg, #6b7280, #4b5563);
-            border-color: rgba(107, 114, 128, 0.5);
+            background: linear-gradient(135deg, #6b7280 0%, #4b5563 60%, #374151 100%);
+            border-color: rgba(107, 114, 128, 0.6);
+            box-shadow: 
+                0 6px 24px rgba(107, 114, 128, 0.3),
+                0 0 48px rgba(107, 114, 128, 0.1),
+                inset 0 1px 2px rgba(255, 255, 255, 0.2);
+            filter: grayscale(40%);
+        }
+
+        .sound-toggle.muted:hover {
+            transform: translateY(-50%) scale(1.12);
+            box-shadow: 
+                0 10px 36px rgba(107, 114, 128, 0.4),
+                0 0 60px rgba(107, 114, 128, 0.15),
+                inset 0 1px 2px rgba(255, 255, 255, 0.3);
+            filter: grayscale(20%);
         }
 
         @media (max-width: 768px) {
@@ -659,11 +889,15 @@
         </div>
         
         <div class="controls">
-            <button class="btn-checkin" id="checkinBtn">📅 Check-in (+15)</button>
+            <div class="checkin-container">
+                <button class="btn-checkin" id="checkinBtn">📅 Check-in (+15)</button>
+                <span class="checkin-subtext" id="checkinSubtext" style="display: none;">Volte amanhã</span>
+            </div>
             <button class="btn-missions" id="missionsBtn">🎯 Missões</button>
             <button class="btn-leaderboard" id="leaderboardBtn">🏆 Ranking</button>
             <div class="stats">
                 <p>🏆 <span id="bestScore">0</span> &nbsp; 💰 <span id="totalPoints">0</span></p>
+                <p>📈 Total: <span id="totalScore">0</span></p>
                 <p id="userInfo">👤 Jogador</p>
             </div>
         </div>
@@ -871,13 +1105,14 @@
         let gameVars = {
             player: { x: 220, y: 430, width: 40, height: 50 },
             coins: [],
-            speed: 1.2,
+            speed: 2.0,
             gameRunning: false
         };
 
         let gameState = {
             score: 0,
             bestScore: localStorage.getItem('rhapsBestScore') ? parseInt(localStorage.getItem('rhapsBestScore')) : 0,
+            totalScore: localStorage.getItem('rhapsTotalScore') ? parseInt(localStorage.getItem('rhapsTotalScore')) : 0,
             lives: 3,
             missedCoins: 0,
             isPaused: false,
@@ -903,39 +1138,63 @@
         // ============ LEADERBOARD ============
         function saveScoreToLeaderboard(name, score) {
             let leaderboard = localStorage.getItem('rhapsLeaderboard') ? JSON.parse(localStorage.getItem('rhapsLeaderboard')) : [];
-            leaderboard.push({ name, score, date: new Date().toLocaleDateString() });
-            leaderboard.sort((a, b) => b.score - a.score);
+            leaderboard.push({ name, score, totalScore: gameState.totalScore, date: new Date().toLocaleDateString() });
+            leaderboard.sort((a, b) => b.totalScore - a.totalScore);
             leaderboard = leaderboard.slice(0, 20);
             localStorage.setItem('rhapsLeaderboard', JSON.stringify(leaderboard));
         }
 
-        function renderLeaderboard() {
-            const leaderboard = localStorage.getItem('rhapsLeaderboard') ? JSON.parse(localStorage.getItem('rhapsLeaderboard')) : [];
-            const list = document.getElementById('leaderboardList');
+       async function renderLeaderboard() {
+    let leaderboard = [];
+    
+    // Tentar buscar do Firebase (GLOBAL)
+    try {
+        leaderboard = await fetchLeaderboardFromServer();
+        console.log('📊 Ranking Global do Firebase carregado');
+    } catch (error) {
+        console.warn('⚠️ Usando ranking local:', error);
+        leaderboard = localStorage.getItem('rhapsLeaderboard') 
+            ? JSON.parse(localStorage.getItem('rhapsLeaderboard')) 
+            : [];
+    }
+    
+    const list = document.getElementById('leaderboardList');
 
-            if (leaderboard.length === 0) {
-                list.innerHTML = '<p style="text-align: center; color: #a0aec0; padding: 40px 20px;">Nenhuma pontuação registrada. Jogue e aparece aqui!</p>';
-                return;
-            }
+    if (leaderboard.length === 0) {
+        list.innerHTML = '<p style="text-align: center; color: #a0aec0; padding: 40px 20px;">Nenhuma pontuação registrada. Jogue e aparece aqui!</p>';
+        return;
+    }
 
-            list.innerHTML = leaderboard.map((entry, idx) => {
-                const rank = idx + 1;
-                const isCurrentUser = entry.name === gameState.playerName;
-                const rankClass = rank === 1 ? 'rank-1' : rank === 2 ? 'rank-2' : rank === 3 ? 'rank-3' : 'rank-other';
-                const medal = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : `#${rank}`;
+    // Migrar dados antigos
+    leaderboard = leaderboard.map(entry => ({
+        ...entry,
+        totalScore: entry.totalScore || entry.score
+    }));
 
-                return `
-                    <div class="leaderboard-row ${isCurrentUser ? 'user-row' : ''}">
-                        <div class="rank-badge ${rankClass}">${medal}</div>
-                        <div class="leaderboard-info">
-                            <div class="leaderboard-name">${entry.name} ${isCurrentUser ? '(Você)' : ''}</div>
-                            <div style="font-size: 12px; color: #a0aec0;">${entry.date}</div>
-                        </div>
-                        <div class="leaderboard-score">${entry.score}</div>
-                    </div>
-                `;
-            }).join('');
-        }
+    // Ordenar por totalScore
+    leaderboard.sort((a, b) => b.totalScore - a.totalScore);
+
+    console.log('🏆 Leaderboard renderizado:', leaderboard);
+
+    list.innerHTML = leaderboard.map((entry, idx) => {
+        const rank = idx + 1;
+        const isCurrentUser = entry.playerName === gameState.playerName;
+        const rankClass = rank === 1 ? 'rank-1' : rank === 2 ? 'rank-2' : rank === 3 ? 'rank-3' : 'rank-other';
+        const medal = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : `#${rank}`;
+        const totalScore = entry.totalScore || entry.score || 0;
+
+        return `
+            <div class="leaderboard-row ${isCurrentUser ? 'user-row' : ''}">
+                <div class="rank-badge ${rankClass}">${medal}</div>
+                <div class="leaderboard-info">
+                    <div class="leaderboard-name">${entry.playerName} ${isCurrentUser ? '(Você)' : ''}</div>
+                    <div style="font-size: 12px; color: #a0aec0;">📈 ${totalScore} pontos | ${entry.date || 'N/A'}</div>
+                </div>
+                <div class="leaderboard-score">${entry.score || 0}</div>
+            </div>
+        `;
+    }).join('');
+}
 
         // ============ COOLDOWN DISPLAY ============
         let cooldownDisplayInterval = null;
@@ -1025,7 +1284,7 @@
                 toggle.textContent = '🔇';
             }
             renderMissions();
-            renderLeaderboard();
+            await renderLeaderboard();
             startGame();
             updateUI();
             startMissionCountdownUpdate();
@@ -1048,8 +1307,14 @@
                 const now = Date.now();
                 const cooldownMs = 8 * 60 * 60 * 1000;
                 if (now < lastGameOverTime + cooldownMs) {
+                    // Cooldown ainda ativo - mostra a tela de cooldown
                     gameVars.gameRunning = false;
+                    showCooldownDisplay();
+                    showGameOverScreenWithCooldown();
                     return;
+                } else {
+                    // Cooldown expirou - limpa o localStorage
+                    localStorage.removeItem('rhapsLastGameOver');
                 }
             }
 
@@ -1077,7 +1342,7 @@
             if (!gameState.isPaused && gameVars.gameRunning) {
                 if (!gameVars.lastCoinTime) gameVars.lastCoinTime = Date.now();
                 
-                if (Date.now() - gameVars.lastCoinTime > 1040 / gameVars.speed) {
+                if (Date.now() - gameVars.lastCoinTime > 2016 / gameVars.speed) {
                     gameVars.coins.push({
                         id: Math.random(),
                         x: Math.random() * 420,
@@ -1109,7 +1374,7 @@
                         coin.y < gameVars.player.y + gameVars.player.height &&
                         coin.y + coin.height > gameVars.player.y) {
                         gameState.score++;
-                        gameVars.speed += 0.0225;
+                        gameVars.speed += 0.0324;
                         gameState.missedCoins = 0;
                         soundManager.playSound('coin');
                         createParticles(coin.x, coin.y, 6);
@@ -1134,8 +1399,14 @@
                                     gameState.bestScore = gameState.score;
                                     localStorage.setItem('rhapsBestScore', gameState.bestScore);
                                 }
-                                saveScoreToLeaderboard(gameState.playerName, gameState.score);
-                                renderLeaderboard();
+                                // Somar score atual ao total cumulativo
+                                gameState.totalScore += gameState.score;
+                                localStorage.setItem('rhapsTotalScore', gameState.totalScore);
+                                // Salva no servidor (se disponível) e no localStorage (fallback)
+                                saveScoreToServer(gameState.playerName, gameState.score).catch(() => {
+                                    saveScoreToLeaderboard(gameState.playerName, gameState.score);
+                                });
+                                await renderLeaderboard();
                                 setTimeout(() => {
                                     soundManager.playSound('game-over');
                                     showGameOverScreen();
@@ -1210,7 +1481,7 @@
             
             ctx.fillStyle = '#FF3333';
             ctx.font = 'bold 22px Arial';
-            ctx.fillText(`❤️ ${gameState.lives}`, 20, 60);
+            ctx.fillText(`❤️ Vidas: ${gameState.lives}`, 20, 60);
 
             ctx.fillStyle = '#00FF00';
             ctx.font = 'bold 18px Arial';
@@ -1234,27 +1505,31 @@
         }, { passive: false });
 
         // ============ CHECK-IN ============
-        document.getElementById('checkinBtn').addEventListener('click', () => {
+        document.getElementById('checkinBtn').addEventListener('click', async () => {
+
             if (!gameState.canCheckIn) return;
             gameState.missionRewards += 15;
+            gameState.totalScore += 15;
             gameState.canCheckIn = false;
             localStorage.setItem('rhapsMissionRewards', gameState.missionRewards);
+            localStorage.setItem('rhapsTotalScore', gameState.totalScore);
             soundManager.playSound('checkin');
             updateUI();
         });
 
         // ============ MISSÕES ============
-        document.getElementById('missionsBtn').addEventListener('click', () => {
+        document.getElementById('missionsBtn').addEventListener('click', async () => {
+
             gameState.isPaused = true;
             gameVars.gameRunning = false;
             document.getElementById('missionsModal').classList.add('show');
         });
 
-        document.getElementById('leaderboardBtn').addEventListener('click', () => {
-            gameState.isPaused = true;
-            gameVars.gameRunning = false;
-            renderLeaderboard();
-            document.getElementById('leaderboardModal').classList.add('show');
+        document.getElementById('leaderboardBtn').addEventListener('click', async () => {  // ← Adicionar 'async'
+        gameState.isPaused = true;
+        gameVars.gameRunning = false;
+        await renderLeaderboard();
+        document.getElementById('leaderboardModal').classList.add('show');
         });
 
         function closeMissionsModal() {
@@ -1332,7 +1607,9 @@
             const wasCompleted = isMissionCompleted(missionId);
             if (!wasCompleted) {
                 gameState.missionRewards += mission.points;
+                gameState.totalScore += mission.points;
                 localStorage.setItem('rhapsMissionRewards', gameState.missionRewards);
+                localStorage.setItem('rhapsTotalScore', gameState.totalScore);
             }
 
             gameState.completedMissions[missionId] = new Date().toISOString();
@@ -1467,6 +1744,14 @@
             startAutoReturnCountdown();
         }
 
+        function showGameOverScreenWithCooldown() {
+            // Mostra tela de Game Over bloqueada sem pontuação
+            document.getElementById('gameOverModal').classList.add('show');
+            document.getElementById('gameOverBtn').disabled = true;
+            startCooldownTimer();
+            startAutoReturnCountdown();
+        }
+
         function startCooldownTimer() {
             const lastGameOverTime = parseInt(localStorage.getItem('rhapsLastGameOver'));
             const cooldownMs = 8 * 60 * 60 * 1000;
@@ -1493,12 +1778,25 @@
         }
 
         function startAutoReturnCountdown() {
+            const lastGameOverTime = parseInt(localStorage.getItem('rhapsLastGameOver'));
+            const cooldownMs = 8 * 60 * 60 * 1000;
+            const isCooldownActive = lastGameOverTime && Date.now() < lastGameOverTime + cooldownMs;
+            
             let returnTime = 10;
             const updateReturn = () => {
-                document.getElementById('returnCountdown').textContent = `Voltando em ${returnTime}s...`;
+                if (isCooldownActive) {
+                    // Se está em cooldown, mostra mensagem com countdown
+                    document.getElementById('returnCountdown').innerHTML = `🔒 <strong>Jogo bloqueado por 8 horas</strong><br><br>Voltando em ${returnTime}s...`;
+                } else {
+                    // Sem cooldown, mostra countdown normal
+                    document.getElementById('returnCountdown').textContent = `Voltando em ${returnTime}s...`;
+                }
+                
                 if (returnTime <= 0) {
                     document.getElementById('gameOverModal').classList.remove('show');
-                    startGame();
+                    if (!isCooldownActive) {
+                        startGame();
+                    }
                 } else {
                     returnTime--;
                 }
@@ -1509,9 +1807,17 @@
 
         function restartGame() {
             const lastGameOverTime = parseInt(localStorage.getItem('rhapsLastGameOver'));
-            if (Date.now() < lastGameOverTime + 8 * 60 * 60 * 1000) return;
+            const cooldownMs = 8 * 60 * 60 * 1000;
             
+            if (lastGameOverTime && Date.now() < lastGameOverTime + cooldownMs) {
+                // Cooldown ainda ativo - não deixa jogar
+                return;
+            }
+            
+            // Limpa o cooldown do localStorage
+            localStorage.removeItem('rhapsLastGameOver');
             document.getElementById('gameOverModal').classList.remove('show');
+            hideCooldownDisplay();
             startGame();
         }
 
@@ -1519,8 +1825,17 @@
         function updateUI() {
             document.getElementById('bestScore').textContent = gameState.bestScore;
             document.getElementById('totalPoints').textContent = gameState.missionRewards;
+            document.getElementById('totalScore').textContent = gameState.totalScore;
             document.getElementById('checkinBtn').textContent = gameState.canCheckIn ? '📅 Check-in (+15)' : '✓ Feito';
             document.getElementById('checkinBtn').disabled = !gameState.canCheckIn;
+            
+            // Mostra/esconde o subtexto "Volte amanhã"
+            const checkinSubtext = document.getElementById('checkinSubtext');
+            if (gameState.canCheckIn) {
+                checkinSubtext.style.display = 'none';
+            } else {
+                checkinSubtext.style.display = 'block';
+            }
         }
 
         window.addEventListener('click', (e) => {
@@ -1529,6 +1844,65 @@
             if (e.target === missionsModal) closeMissionsModal();
             if (e.target === leaderboardModal) closeLeaderboardModal();
         });
+
+     // ============ FIREBASE INTEGRATION ============
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCEGnQk-KloV77z-_hsn6oReKHcPmbwmD0",
+  authDomain: "rhaps-catcher.firebaseapp.com",
+  databaseURL: "https://rhaps-catcher-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "rhaps-catcher",
+  storageBucket: "rhaps-catcher.firebasestorage.app",
+  messagingSenderId: "295712036594",
+  appId: "1:295712036594:web:66aa123ea109397a78226b"
+};
+
+// Inicializar Firebase
+firebase.initializeApp(firebaseConfig);
+const database = firebase.database();
+const scoresRef = database.ref('scores');
+
+// Salvar score no Firebase (GLOBAL)
+async function saveScoreToServer(playerName, score) {
+    try {
+        const scoreEntry = {
+            playerName: playerName,
+            score: parseInt(score),
+            totalScore: gameState.totalScore,
+            timestamp: firebase.database.ServerValue.TIMESTAMP,
+            date: new Date().toLocaleDateString('pt-BR')
+        };
+        
+        // Salva com um ID único
+        await scoresRef.child(playerName + '_' + Date.now()).set(scoreEntry);
+        console.log('✅ Score salvo no Firebase!');
+        return true;
+    } catch (error) {
+        console.error('❌ Erro ao salvar:', error);
+        saveScoreToLeaderboard(playerName, score);
+        return false;
+    }
+}
+
+// Buscar leaderboard GLOBAL do Firebase
+async function fetchLeaderboardFromServer() {
+    return new Promise((resolve) => {
+        scoresRef.orderByChild('totalScore').limitToLast(100).once('value', (snapshot) => {
+            const data = snapshot.val();
+            
+            if (!data) {
+                resolve([]);
+                return;
+            }
+            
+            const leaderboard = Object.values(data)
+                .sort((a, b) => b.totalScore - a.totalScore)
+                .slice(0, 100);
+            
+            resolve(leaderboard);
+        });
+    });
+
     </script>
 </body>
 </html>
