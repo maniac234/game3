@@ -1392,7 +1392,7 @@ localStorage.setItem('rhapsTotalScore', gameState.totalScore);
 saveScoreToFirebase(gameState.playerName, gameState.score).catch(() => {
     saveScoreToLeaderboard(gameState.playerName, gameState.score);
 });
-await renderLeaderboard();
+renderLeaderboard();
                                 setTimeout(() => {
                                     soundManager.playSound('game-over');
                                     showGameOverScreen();
@@ -1935,10 +1935,6 @@ async function getLeaderboardFromFirebase() {
                 return null;
             }
         }
-    </script>
-</body>
-</html>
-
     </script>
 </body>
 </html>
