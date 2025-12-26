@@ -6,8 +6,8 @@
     <title>Rhaps Catcher - Jogo de Coleta</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <!-- Firebase -->
-    <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-database.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-database.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
@@ -1144,15 +1144,14 @@
             localStorage.setItem('rhapsLeaderboard', JSON.stringify(leaderboard));
         }
 
-       async function renderLeaderboard() {
+        async function renderLeaderboard() {
     let leaderboard = [];
     
-    // Tentar buscar do Firebase (GLOBAL)
+    // Tentar buscar do Firebase
     try {
-        leaderboard = await fetchLeaderboardFromServer();
-        console.log('📊 Ranking Global do Firebase carregado');
+        leaderboard = await getLeaderboardFromFirebase();
     } catch (error) {
-        console.warn('⚠️ Usando ranking local:', error);
+        console.warn('Usando ranking local:', error);
         leaderboard = localStorage.getItem('rhapsLeaderboard') 
             ? JSON.parse(localStorage.getItem('rhapsLeaderboard')) 
             : [];
@@ -1161,34 +1160,21 @@
     const list = document.getElementById('leaderboardList');
 
     if (leaderboard.length === 0) {
-        list.innerHTML = '<p style="text-align: center; color: #a0aec0; padding: 40px 20px;">Nenhuma pontuação registrada. Jogue e aparece aqui!</p>';
+        list.innerHTML = '<p style="text-align: center; color: #a0aec0; padding: 40px 20px;">Nenhuma pontuação registrada ainda!</p>';
         return;
     }
 
-    // Migrar dados antigos
-    leaderboard = leaderboard.map(entry => ({
-        ...entry,
-        totalScore: entry.totalScore || entry.score
-    }));
-
-    // Ordenar por totalScore
-    leaderboard.sort((a, b) => b.totalScore - a.totalScore);
-
-    console.log('🏆 Leaderboard renderizado:', leaderboard);
-
     list.innerHTML = leaderboard.map((entry, idx) => {
         const rank = idx + 1;
-        const isCurrentUser = entry.playerName === gameState.playerName;
-        const rankClass = rank === 1 ? 'rank-1' : rank === 2 ? 'rank-2' : rank === 3 ? 'rank-3' : 'rank-other';
         const medal = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : `#${rank}`;
         const totalScore = entry.totalScore || entry.score || 0;
 
         return `
-            <div class="leaderboard-row ${isCurrentUser ? 'user-row' : ''}">
-                <div class="rank-badge ${rankClass}">${medal}</div>
+            <div class="leaderboard-row">
+                <div class="rank-badge">${medal}</div>
                 <div class="leaderboard-info">
-                    <div class="leaderboard-name">${entry.playerName} ${isCurrentUser ? '(Você)' : ''}</div>
-                    <div style="font-size: 12px; color: #a0aec0;">📈 ${totalScore} pontos | ${entry.date || 'N/A'}</div>
+                    <div class="leaderboard-name">${entry.playerName}</div>
+                    <div style="font-size: 12px; color: #a0aec0;">📈 ${totalScore} pontos</div>
                 </div>
                 <div class="leaderboard-score">${entry.score || 0}</div>
             </div>
@@ -1274,7 +1260,7 @@
         }
 
         // ============ INICIALIZAÇÃO ============
-            window.addEventListener('load', async () => {
+        window.addEventListener('load', () => {
             // Inicializa Telegram Web App
             initTelegram();
 
@@ -1284,7 +1270,7 @@
                 toggle.textContent = '🔇';
             }
             renderMissions();
-            await renderLeaderboard();
+            renderLeaderboard();
             startGame();
             updateUI();
             startMissionCountdownUpdate();
@@ -1400,13 +1386,13 @@
                                     localStorage.setItem('rhapsBestScore', gameState.bestScore);
                                 }
                                 // Somar score atual ao total cumulativo
-                                gameState.totalScore += gameState.score;
-                                localStorage.setItem('rhapsTotalScore', gameState.totalScore);
-                                // Salva no servidor (se disponível) e no localStorage (fallback)
-                                saveScoreToServer(gameState.playerName, gameState.score).catch(() => {
-                                    saveScoreToLeaderboard(gameState.playerName, gameState.score);
-                                });
-                                await renderLeaderboard();
+                               gameState.totalScore += gameState.score;
+localStorage.setItem('rhapsTotalScore', gameState.totalScore);
+// Salva no Firebase e no localStorage (fallback)
+saveScoreToFirebase(gameState.playerName, gameState.score).catch(() => {
+    saveScoreToLeaderboard(gameState.playerName, gameState.score);
+});
+await renderLeaderboard();
                                 setTimeout(() => {
                                     soundManager.playSound('game-over');
                                     showGameOverScreen();
@@ -1505,8 +1491,7 @@
         }, { passive: false });
 
         // ============ CHECK-IN ============
-        document.getElementById('checkinBtn').addEventListener('click', async () => {
-
+        document.getElementById('checkinBtn').addEventListener('click', () => {
             if (!gameState.canCheckIn) return;
             gameState.missionRewards += 15;
             gameState.totalScore += 15;
@@ -1518,18 +1503,17 @@
         });
 
         // ============ MISSÕES ============
-        document.getElementById('missionsBtn').addEventListener('click', async () => {
-
+        document.getElementById('missionsBtn').addEventListener('click', () => {
             gameState.isPaused = true;
             gameVars.gameRunning = false;
             document.getElementById('missionsModal').classList.add('show');
         });
 
-        document.getElementById('leaderboardBtn').addEventListener('click', async () => {  // ← Adicionar 'async'
-        gameState.isPaused = true;
-        gameVars.gameRunning = false;
-        await renderLeaderboard();
-        document.getElementById('leaderboardModal').classList.add('show');
+        document.getElementById('leaderboardBtn').addEventListener('click', () => {
+            gameState.isPaused = true;
+            gameVars.gameRunning = false;
+            renderLeaderboard();
+            document.getElementById('leaderboardModal').classList.add('show');
         });
 
         function closeMissionsModal() {
@@ -1734,6 +1718,8 @@
         function showGameOverScreen() {
             const now = Date.now();
             localStorage.setItem('rhapsLastGameOver', now);
+            // Tentar salvar no Firebase
+saveScoreToFirebase(gameState.playerName, gameState.score).catch(console.error);
             
             document.getElementById('gameOverScore').textContent = gameState.score;
             document.getElementById('gameOverModal').classList.add('show');
@@ -1820,7 +1806,62 @@
             hideCooldownDisplay();
             startGame();
         }
+// ============ FIREBASE INTEGRATION ============
 
+const firebaseConfig = {
+  apiKey: "AIzaSyCEGnQk-KloV77z-_hsn6oReKHcPmbwmD0",
+  authDomain: "rhaps-catcher.firebaseapp.com",
+  databaseURL: "https://rhaps-catcher-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "rhaps-catcher",
+  storageBucket: "rhaps-catcher.firebasestorage.app",
+  messagingSenderId: "295712036594",
+  appId: "1:295712036594:web:66aa123ea109397a78226b"
+};
+
+// Inicializar Firebase
+firebase.initializeApp(firebaseConfig);
+const database = firebase.database();
+const scoresRef = database.ref('scores');
+
+// Salvar score no Firebase
+async function saveScoreToFirebase(playerName, score) {
+    try {
+        const scoreEntry = {
+            playerName: playerName,
+            score: parseInt(score),
+            totalScore: gameState.totalScore,
+            timestamp: Date.now(),
+            date: new Date().toLocaleDateString('pt-BR')
+        };
+        
+        await scoresRef.child(playerName + '_' + Date.now()).set(scoreEntry);
+        console.log('✅ Score salvo no Firebase!');
+        return true;
+    } catch (error) {
+        console.error('❌ Erro ao salvar no Firebase:', error);
+        return false;
+    }
+}
+
+// Buscar leaderboard do Firebase
+async function getLeaderboardFromFirebase() {
+    try {
+        const snapshot = await scoresRef.orderByChild('totalScore').limitToLast(100).once('value');
+        const data = snapshot.val();
+        
+        if (!data) return [];
+        
+        const leaderboard = Object.values(data)
+            .sort((a, b) => b.totalScore - a.totalScore)
+            .slice(0, 100);
+        
+        console.log('📊 Ranking carregado do Firebase');
+        return leaderboard;
+    } catch (error) {
+        console.error('❌ Erro ao buscar ranking:', error);
+        return [];
+    }
+}
         // ============ UI ============
         function updateUI() {
             document.getElementById('bestScore').textContent = gameState.bestScore;
@@ -1845,64 +1886,58 @@
             if (e.target === leaderboardModal) closeLeaderboardModal();
         });
 
-     // ============ FIREBASE INTEGRATION ============
+        // ============ API SERVER INTEGRATION ============
+        const API_URL = 'http://localhost:3000/api';
 
-const firebaseConfig = {
-  apiKey: "AIzaSyCEGnQk-KloV77z-_hsn6oReKHcPmbwmD0",
-  authDomain: "rhaps-catcher.firebaseapp.com",
-  databaseURL: "https://rhaps-catcher-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "rhaps-catcher",
-  storageBucket: "rhaps-catcher.firebasestorage.app",
-  messagingSenderId: "295712036594",
-  appId: "1:295712036594:web:66aa123ea109397a78226b"
-};
+        // Salvar score no servidor
+        async function saveScoreToServer(playerName, score) {
+            try {
+                const response = await fetch(`${API_URL}/scores`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        playerName: playerName,
+                        score: parseInt(score),
+                        totalScore: gameState.totalScore
+                    })
+                });
 
-// Inicializar Firebase
-firebase.initializeApp(firebaseConfig);
-const database = firebase.database();
-const scoresRef = database.ref('scores');
-
-// Salvar score no Firebase (GLOBAL)
-async function saveScoreToServer(playerName, score) {
-    try {
-        const scoreEntry = {
-            playerName: playerName,
-            score: parseInt(score),
-            totalScore: gameState.totalScore,
-            timestamp: firebase.database.ServerValue.TIMESTAMP,
-            date: new Date().toLocaleDateString('pt-BR')
-        };
-        
-        // Salva com um ID único
-        await scoresRef.child(playerName + '_' + Date.now()).set(scoreEntry);
-        console.log('✅ Score salvo no Firebase!');
-        return true;
-    } catch (error) {
-        console.error('❌ Erro ao salvar:', error);
-        saveScoreToLeaderboard(playerName, score);
-        return false;
-    }
-}
-
-// Buscar leaderboard GLOBAL do Firebase
-async function fetchLeaderboardFromServer() {
-    return new Promise((resolve) => {
-        scoresRef.orderByChild('totalScore').limitToLast(100).once('value', (snapshot) => {
-            const data = snapshot.val();
-            
-            if (!data) {
-                resolve([]);
-                return;
+                const data = await response.json();
+                if (data.success) {
+                    console.log('✅ Score salvo no servidor:', data.entry);
+                    return true;
+                } else {
+                    console.error('❌ Erro ao salvar score:', data.message);
+                    return false;
+                }
+            } catch (error) {
+                console.error('❌ Erro de conexão ao servidor:', error);
+                return false;
             }
-            
-            const leaderboard = Object.values(data)
-                .sort((a, b) => b.totalScore - a.totalScore)
-                .slice(0, 100);
-            
-            resolve(leaderboard);
-        });
-    });
-}
+        }
+
+        // Buscar leaderboard do servidor
+        async function fetchLeaderboardFromServer() {
+            try {
+                const response = await fetch(`${API_URL}/leaderboard`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    return data.leaderboard;
+                } else {
+                    console.error('❌ Erro ao buscar leaderboard');
+                    return null;
+                }
+            } catch (error) {
+                console.error('❌ Erro de conexão ao servidor:', error);
+                return null;
+            }
+        }
+    </script>
+</body>
+</html>
 
     </script>
 </body>
