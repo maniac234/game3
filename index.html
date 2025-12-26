@@ -1274,7 +1274,7 @@
         }
 
         // ============ INICIALIZAÇÃO ============
-        window.addEventListener('load', () => {
+            window.addEventListener('load', async () => {
             // Inicializa Telegram Web App
             initTelegram();
 
@@ -1902,6 +1902,7 @@ async function fetchLeaderboardFromServer() {
             resolve(leaderboard);
         });
     });
+}
 
     </script>
 </body>
